@@ -1,396 +1,519 @@
 ---
 import { getCollection } from "astro:content";
 import Layout from "@layouts/Layout.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import LinkButton from "@components/LinkButton.astro";
+import Hr from "@components/Hr.astro";
+import Card from "@components/Card";
+import getSortedPosts from "@utils/getSortedPosts";
 
 const posts = await getCollection("blog");
 
-const sortedPosts = posts
-  .sort((a, b) => {
-    const dateA = new Date(a.data.pubDatetime).getTime();
-    const dateB = new Date(b.data.pubDatetime).getTime();
-    return dateB - dateA;
-  })
-  .slice(0, 5);
+const sortedPosts = getSortedPosts(posts);
+const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
+const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
 ---
 
 <Layout>
-  <main>
+  <Header />
 
-    <!-- Ghost -->
-    <div class="ghost-container" aria-hidden="true">
-      <svg
-        class="ghost"
-        viewBox="0 0 200 200"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <!-- Body -->
-        <path
-          d="
-            M38 125
-            C25 108 22 82 30 61
-            C40 36 64 22 96 22
-            C132 22 158 42 166 70
-            C174 98 164 124 151 139
+  <main id="main-content">
+    <section id="hero">
 
-            C145 146 137 149 130 151
+      <!-- Digital Ghost -->
+      <div class="ghost-stage" aria-hidden="true">
+        <div class="ghost-trail"></div>
 
-            C126 152 124 148 124 143
-            C124 138 121 134 118 135
-            C113 137 111 146 107 153
+        <div class="ghost">
+          <div class="ghost-body">
+            <div class="ghost-code top">01 1A 0F</div>
 
-            C103 161 96 166 89 166
-            C80 166 76 159 75 151
-            C74 145 72 139 68 140
-            C64 141 61 149 57 153
+            <div class="ghost-face">
+              <span class="eye">0</span>
+              <span class="eye">1</span>
+            </div>
 
-            C51 159 44 158 40 151
-            C35 143 35 134 38 125
-            Z
-          "
-          fill="white"
-          stroke="black"
-          stroke-width="5"
-          stroke-linejoin="round"
-        />
+            <div class="ghost-code middle">
+              X7 0 1 DATA
+            </div>
 
-        <!-- Left eye -->
-        <ellipse
-          cx="75"
-          cy="76"
-          rx="9"
-          ry="14"
-          fill="black"
-        />
-
-        <!-- Right eye -->
-        <ellipse
-          cx="119"
-          cy="76"
-          rx="9"
-          ry="14"
-          fill="black"
-        />
-
-        <!-- Left cheek/body line -->
-        <path
-          d="M65 105 C62 117 58 125 52 132"
-          fill="none"
-          stroke="black"
-          stroke-width="5"
-          stroke-linecap="round"
-        />
-
-        <!-- Right cheek/body line -->
-        <path
-          d="M133 105 C131 117 128 126 122 133"
-          fill="none"
-          stroke="black"
-          stroke-width="5"
-          stroke-linecap="round"
-        />
-      </svg>
-    </div>
-
-
-    <!-- Recent Posts -->
-    <section class="recent-posts">
-
-      <h2>Recent Posts</h2>
-
-      {
-        sortedPosts.length > 0 ? (
-          <div class="post-list">
-            {sortedPosts.map((post) => (
-              <article class="post">
-                <a href={`/posts/${post.slug}/`} class="post-link">
-                  <h3>{post.data.title}</h3>
-
-                  <div class="post-date">
-                    <span class="calendar">▣</span>
-
-                    <time datetime={post.data.pubDatetime.toISOString()}>
-                      {post.data.pubDatetime.toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </time>
-                  </div>
-
-                  {post.data.description && (
-                    <p>{post.data.description}</p>
-                  )}
-                </a>
-              </article>
-            ))}
+            <div class="ghost-bottom">
+              <span>0</span>
+              <span>1</span>
+              <span>0</span>
+              <span>1</span>
+              <span>0</span>
+            </div>
           </div>
-        ) : (
-          <p class="no-posts">No posts yet.</p>
-        )
-      }
+        </div>
+      </div>
 
-      <a href="/posts/" class="all-posts">
-        <span>All Posts</span>
-        <span class="arrow">→</span>
-      </a>
+      <div class="hero-content">
+        <div class="title-row">
+          <h1>secneuqecnoc</h1>
 
+          <a
+            href="/rss.xml"
+            class="rss-link"
+            aria-label="RSS Feed"
+            title="RSS Feed"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon">
+              <path
+                d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
+              ></path>
+              <path
+                d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
+              ></path>
+              <circle cx="6" cy="18" r="2"></circle>
+            </svg>
+
+            <span class="sr-only">RSS Feed</span>
+          </a>
+        </div>
+
+        <p class="site-topic">Data</p>
+      </div>
     </section>
 
+    <Hr />
+
+    {
+      featuredPosts.length > 0 && (
+        <>
+          <section id="featured">
+            <h2>Featured</h2>
+
+            <ul>
+              {featuredPosts.map(({ data, slug }) => (
+                <Card
+                  href={`/posts/${slug}/`}
+                  frontmatter={data}
+                  secHeading={false}
+                />
+              ))}
+            </ul>
+          </section>
+
+          {recentPosts.length > 0 && <Hr />}
+        </>
+      )
+    }
+
+    {
+      recentPosts.length > 0 && (
+        <section id="recent-posts">
+          <h2>Recent Posts</h2>
+
+          <ul>
+            {recentPosts.map(
+              ({ data, slug }, index) =>
+                index < 4 && (
+                  <Card
+                    href={`/posts/${slug}/`}
+                    frontmatter={data}
+                    secHeading={false}
+                  />
+                )
+            )}
+          </ul>
+        </section>
+      )
+    }
+
+    <div class="all-posts-btn-wrapper">
+      <LinkButton href="/posts/">
+        All Posts
+
+        <svg xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"
+          ></path>
+        </svg>
+      </LinkButton>
+    </div>
   </main>
 
+  <Footer />
+</Layout>
 
-  <style>
-    main {
-      position: relative;
-      overflow: hidden;
+<style>
+  #hero {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
+    @apply pb-6 pt-8;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 5;
+  }
+
+  .title-row {
+    @apply flex items-center gap-4;
+  }
+
+  #hero h1 {
+    @apply my-4 inline-block text-3xl font-bold sm:my-8 sm:text-5xl;
+  }
+
+  .rss-link {
+    @apply mb-1;
+  }
+
+  .rss-icon {
+    @apply h-6 w-6 fill-skin-accent;
+  }
+
+  .site-topic {
+    @apply my-2 text-lg;
+  }
+
+  /* =========================
+     DIGITAL GHOST
+     ========================= */
+
+  .ghost-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .ghost {
+    position: absolute;
+    left: -140px;
+    top: 35px;
+    width: 115px;
+    height: 105px;
+
+    animation:
+      ghost-fly 11s linear infinite,
+      ghost-float 2.2s ease-in-out infinite;
+
+    opacity: 0.85;
+  }
+
+  .ghost-body {
+    position: relative;
+
+    width: 100px;
+    height: 90px;
+
+    border: 1px solid currentColor;
+    border-radius: 52% 52% 18% 18%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 1;
+
+    background:
+      linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(127, 127, 127, 0.04) 50%,
+        transparent 100%
+      );
+
+    box-shadow:
+      0 0 12px rgba(127, 127, 127, 0.15),
+      inset 0 0 12px rgba(127, 127, 127, 0.05);
+
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% 78%,
+      90% 88%,
+      80% 76%,
+      70% 91%,
+      60% 77%,
+      50% 92%,
+      40% 77%,
+      30% 91%,
+      20% 76%,
+      10% 88%,
+      0% 78%
+    );
+  }
+
+  .ghost-face {
+    display: flex;
+    gap: 25px;
+    margin: 7px 0;
+  }
+
+  .eye {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 14px;
+    height: 18px;
+
+    border: 1px solid currentColor;
+    border-radius: 50%;
+
+    font-size: 9px;
+
+    animation: eye-glitch 1.3s infinite steps(2);
+  }
+
+  .ghost-code {
+    white-space: nowrap;
+    opacity: 0.65;
+    letter-spacing: 1px;
+  }
+
+  .ghost-code.top {
+    font-size: 8px;
+  }
+
+  .ghost-code.middle {
+    font-size: 7px;
+    margin-top: 2px;
+  }
+
+  .ghost-bottom {
+    display: flex;
+    gap: 7px;
+    margin-top: 7px;
+    opacity: 0.7;
+  }
+
+  .ghost-bottom span {
+    animation: code-flicker 1.5s infinite alternate;
+  }
+
+  .ghost-bottom span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .ghost-bottom span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .ghost-bottom span:nth-child(4) {
+    animation-delay: 0.6s;
+  }
+
+  .ghost-bottom span:nth-child(5) {
+    animation-delay: 0.8s;
+  }
+
+  /* Digital particles behind the ghost */
+
+  .ghost::before,
+  .ghost::after {
+    content: "0 1 A F 7 X 0 1";
+    position: absolute;
+
+    font-family: monospace;
+    font-size: 9px;
+    letter-spacing: 5px;
+
+    white-space: nowrap;
+
+    opacity: 0;
+
+    animation: particle-fade 2s infinite;
+  }
+
+  .ghost::before {
+    right: 90px;
+    top: 35px;
+  }
+
+  .ghost::after {
+    right: 105px;
+    top: 65px;
+    animation-delay: 0.7s;
+  }
+
+  /* Flying across the entire hero */
+
+  @keyframes ghost-fly {
+    0% {
+      left: -150px;
+      transform: scale(0.8) rotate(-3deg);
     }
 
-
-    /* =========================
-       GHOST
-       ========================= */
-
-    .ghost-container {
-      position: fixed;
-      left: -220px;
-      top: 35%;
-      width: 150px;
-      height: 150px;
-
-      z-index: 50;
-
-      pointer-events: none;
-
-      animation:
-        ghost-fly 13s linear infinite;
+    10% {
+      transform: scale(0.9) rotate(2deg);
     }
 
-    .ghost {
-      width: 150px;
-      height: 150px;
-
-      display: block;
-
-      animation:
-        ghost-float 2.2s ease-in-out infinite;
+    30% {
+      transform: scale(1) rotate(-2deg);
     }
 
-
-    /* حرکت روح از چپ به راست */
-
-    @keyframes ghost-fly {
-      0% {
-        transform: translateX(0);
-      }
-
-      100% {
-        transform: translateX(calc(100vw + 440px));
-      }
+    50% {
+      transform: scale(0.95) rotate(3deg);
     }
 
-
-    /* بالا و پایین رفتن روح */
-
-    @keyframes ghost-float {
-      0% {
-        transform: translateY(0) rotate(-2deg);
-      }
-
-      25% {
-        transform: translateY(-13px) rotate(2deg);
-      }
-
-      50% {
-        transform: translateY(0) rotate(-1deg);
-      }
-
-      75% {
-        transform: translateY(13px) rotate(2deg);
-      }
-
-      100% {
-        transform: translateY(0) rotate(-2deg);
-      }
+    70% {
+      transform: scale(1.05) rotate(-2deg);
     }
 
-
-    /* =========================
-       POSTS
-       ========================= */
-
-    .recent-posts {
-      margin-top: 4rem;
-      padding: 0 1rem 5rem;
+    90% {
+      transform: scale(0.9) rotate(2deg);
     }
 
-    .recent-posts h2 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      margin-bottom: 3rem;
+    100% {
+      left: calc(100% + 150px);
+      transform: scale(0.8) rotate(-3deg);
+    }
+  }
+
+  /* Floating up and down */
+
+  @keyframes ghost-float {
+    0%,
+    100% {
+      margin-top: 0;
     }
 
+    50% {
+      margin-top: -25px;
+    }
+  }
 
-    .post-list {
-      display: flex;
-      flex-direction: column;
-      gap: 2.5rem;
+  @keyframes eye-glitch {
+    0% {
+      opacity: 1;
     }
 
-
-    .post {
-      margin: 0;
-      padding: 0;
+    20% {
+      opacity: 0.4;
     }
 
-
-    .post-link {
-      display: block;
-      text-decoration: none;
-      color: inherit;
+    40% {
+      opacity: 1;
     }
 
-
-    .post h3 {
-      margin: 0 0 0.8rem;
-
-      font-size: 1.5rem;
-      font-weight: 600;
-
-      color: #0877a9;
-
-      transition:
-        color 0.2s ease,
-        transform 0.2s ease;
-    }
-
-
-    .post-link:hover h3 {
-      color: #055b82;
-      transform: translateX(3px);
-    }
-
-
-    .post-date {
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-
-      margin-bottom: 0.8rem;
-
-      font-size: 0.95rem;
-
-      opacity: 0.75;
-    }
-
-
-    .calendar {
-      font-size: 1.2rem;
-    }
-
-
-    .post p {
-      margin: 0;
-
-      font-size: 1rem;
-      line-height: 1.7;
-
-      opacity: 0.85;
-    }
-
-
-    .no-posts {
+    70% {
       opacity: 0.6;
     }
 
+    100% {
+      opacity: 1;
+    }
+  }
 
-    /* =========================
-       ALL POSTS
-       ========================= */
-
-    .all-posts {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-
-      margin-top: 4rem;
-
-      font-size: 1.4rem;
-
-      text-decoration: none;
-
-      color: inherit;
-
-      transition:
-        gap 0.2s ease,
-        transform 0.2s ease;
+  @keyframes code-flicker {
+    0% {
+      opacity: 0.25;
     }
 
-
-    .all-posts:hover {
-      gap: 1.4rem;
+    50% {
+      opacity: 0.9;
     }
 
+    100% {
+      opacity: 0.4;
+    }
+  }
 
-    .arrow {
-      font-size: 2rem;
-      line-height: 1;
+  @keyframes particle-fade {
+    0% {
+      opacity: 0;
+      transform: translateX(0);
     }
 
-
-    /* =========================
-       MOBILE
-       ========================= */
-
-    @media (max-width: 640px) {
-
-      .ghost-container {
-        width: 105px;
-        height: 105px;
-
-        left: -150px;
-
-        top: 30%;
-      }
-
-      .ghost {
-        width: 105px;
-        height: 105px;
-      }
-
-
-      .recent-posts {
-        margin-top: 3rem;
-      }
-
-
-      .recent-posts h2 {
-        font-size: 1.8rem;
-      }
-
-
-      .post h3 {
-        font-size: 1.3rem;
-      }
-
-
-      .all-posts {
-        font-size: 1.2rem;
-      }
+    30% {
+      opacity: 0.7;
     }
 
-
-    /* =========================
-       REDUCE MOTION
-       ========================= */
-
-    @media (prefers-reduced-motion: reduce) {
-
-      .ghost-container,
-      .ghost {
-        animation: none;
-      }
-
+    100% {
+      opacity: 0;
+      transform: translateX(-35px);
     }
-  </style>
-</Layout>
+  }
+
+  /* =========================
+     POSTS
+     ========================= */
+
+  #featured,
+  #recent-posts {
+    @apply pb-6 pt-12;
+  }
+
+  #featured h2,
+  #recent-posts h2 {
+    @apply text-2xl font-semibold tracking-wide;
+  }
+
+  .all-posts-btn-wrapper {
+    @apply my-8 text-center;
+  }
+
+  /* Respect users who disable animations */
+
+  @media (prefers-reduced-motion: reduce) {
+    .ghost,
+    .ghost::before,
+    .ghost::after,
+    .eye,
+    .ghost-bottom span {
+      animation: none;
+    }
+  }
+
+  /* Smaller screens */
+
+  @media (max-width: 640px) {
+    #hero {
+      min-height: 230px;
+    }
+
+    .ghost {
+      top: 25px;
+      transform: scale(0.8);
+    }
+  }
+</style>
+
+<script>
+  const characters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
+
+  function randomizeGhost() {
+    const ghost = document.querySelector(".ghost");
+
+    if (!ghost) return;
+
+    const elements = ghost.querySelectorAll(
+      ".ghost-code, .ghost-bottom span, .eye"
+    );
+
+    elements.forEach((element) => {
+      if (Math.random() > 0.55) {
+        const length = Math.max(
+          1,
+          element.textContent?.length ?? 1
+        );
+
+        let text = "";
+
+        for (let i = 0; i < length; i++) {
+          text +=
+            characters[Math.floor(Math.random() * characters.length)];
+        }
+
+        element.textContent = text;
+      }
+    });
+  }
+
+  setInterval(randomizeGhost, 180);
+
+  document.addEventListener("astro:after-swap", () => {
+    setInterval(randomizeGhost, 180);
+  });
+</script>
