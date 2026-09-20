@@ -23,11 +23,4 @@ export const LOGO_IMAGE = {
   height: 46,
 };
 
-export const SOCIALS: SocialObjects = [
-  {
-    name: "Github",
-    href: "https://github.com/secneuqecnoc-netizen/secneuqecnoc",
-    linkTitle: `${SITE.title} on Github`,
-    active: true,
-  },
-];
+export const SOCIALS: SocialObjects = [];
