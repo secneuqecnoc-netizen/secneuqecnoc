@@ -6,17 +6,13 @@ import Footer from "@components/Footer.astro";
 import LinkButton from "@components/LinkButton.astro";
 import Hr from "@components/Hr.astro";
 import Card from "@components/Card";
-import Socials from "@components/Socials.astro";
 import getSortedPosts from "@utils/getSortedPosts";
-import { SOCIALS } from "@config";
 
 const posts = await getCollection("blog");
 
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
-
-const socialCount = SOCIALS.filter(social => social.active).length;
 ---
 
 <Layout>
@@ -24,37 +20,61 @@ const socialCount = SOCIALS.filter(social => social.active).length;
 
   <main id="main-content">
     <section id="hero">
-      <div class="title-row">
-        <h1>S</h1>
 
-        <a
-          href="/rss.xml"
-          class="rss-link"
-          aria-label="RSS Feed"
-          title="RSS Feed"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon">
-            <path
-              d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
-            ></path>
-            <path
-              d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
-            ></path>
-            <circle cx="6" cy="18" r="2"></circle>
-          </svg>
-          <span class="sr-only">RSS Feed</span>
-        </a>
+      <!-- Digital Ghost -->
+      <div class="ghost-stage" aria-hidden="true">
+        <div class="ghost-trail"></div>
+
+        <div class="ghost">
+          <div class="ghost-body">
+            <div class="ghost-code top">01 1A 0F</div>
+
+            <div class="ghost-face">
+              <span class="eye">0</span>
+              <span class="eye">1</span>
+            </div>
+
+            <div class="ghost-code middle">
+              X7 0 1 DATA
+            </div>
+
+            <div class="ghost-bottom">
+              <span>0</span>
+              <span>1</span>
+              <span>0</span>
+              <span>1</span>
+              <span>0</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <p class="site-topic">Data</p>
+      <div class="hero-content">
+        <div class="title-row">
+          <h1>secneuqecnoc</h1>
 
-      {
-        socialCount > 0 && (
-          <div class="social-wrapper">
-            <Socials />
-          </div>
-        )
-      }
+          <a
+            href="/rss.xml"
+            class="rss-link"
+            aria-label="RSS Feed"
+            title="RSS Feed"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="rss-icon">
+              <path
+                d="M19 20.001C19 11.729 12.271 5 4 5v2c7.168 0 13 5.832 13 13.001h2z"
+              ></path>
+              <path
+                d="M12 20.001h2C14 14.486 9.514 10 4 10v2c4.411 0 8 3.589 8 8.001z"
+              ></path>
+              <circle cx="6" cy="18" r="2"></circle>
+            </svg>
+
+            <span class="sr-only">RSS Feed</span>
+          </a>
+        </div>
+
+        <p class="site-topic">Data</p>
+      </div>
     </section>
 
     <Hr />
@@ -64,6 +84,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
         <>
           <section id="featured">
             <h2>Featured</h2>
+
             <ul>
               {featuredPosts.map(({ data, slug }) => (
                 <Card
@@ -104,6 +125,7 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     <div class="all-posts-btn-wrapper">
       <LinkButton href="/posts/">
         All Posts
+
         <svg xmlns="http://www.w3.org/2000/svg">
           <path
             d="m11.293 17.293 1.414 1.414L19.414 12l-6.707-6.707-1.414 1.414L15.586 11H6v2h9.586z"
@@ -118,7 +140,15 @@ const socialCount = SOCIALS.filter(social => social.active).length;
 
 <style>
   #hero {
+    position: relative;
+    min-height: 280px;
+    overflow: hidden;
     @apply pb-6 pt-8;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 5;
   }
 
   .title-row {
@@ -141,9 +171,274 @@ const socialCount = SOCIALS.filter(social => social.active).length;
     @apply my-2 text-lg;
   }
 
-  .social-wrapper {
-    @apply mt-4;
+  /* =========================
+     DIGITAL GHOST
+     ========================= */
+
+  .ghost-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
   }
+
+  .ghost {
+    position: absolute;
+    left: -140px;
+    top: 35px;
+    width: 115px;
+    height: 105px;
+
+    animation:
+      ghost-fly 11s linear infinite,
+      ghost-float 2.2s ease-in-out infinite;
+
+    opacity: 0.85;
+  }
+
+  .ghost-body {
+    position: relative;
+
+    width: 100px;
+    height: 90px;
+
+    border: 1px solid currentColor;
+    border-radius: 52% 52% 18% 18%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    font-family: monospace;
+    font-size: 11px;
+    line-height: 1;
+
+    background:
+      linear-gradient(
+        135deg,
+        transparent 0%,
+        rgba(127, 127, 127, 0.04) 50%,
+        transparent 100%
+      );
+
+    box-shadow:
+      0 0 12px rgba(127, 127, 127, 0.15),
+      inset 0 0 12px rgba(127, 127, 127, 0.05);
+
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% 78%,
+      90% 88%,
+      80% 76%,
+      70% 91%,
+      60% 77%,
+      50% 92%,
+      40% 77%,
+      30% 91%,
+      20% 76%,
+      10% 88%,
+      0% 78%
+    );
+  }
+
+  .ghost-face {
+    display: flex;
+    gap: 25px;
+    margin: 7px 0;
+  }
+
+  .eye {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 14px;
+    height: 18px;
+
+    border: 1px solid currentColor;
+    border-radius: 50%;
+
+    font-size: 9px;
+
+    animation: eye-glitch 1.3s infinite steps(2);
+  }
+
+  .ghost-code {
+    white-space: nowrap;
+    opacity: 0.65;
+    letter-spacing: 1px;
+  }
+
+  .ghost-code.top {
+    font-size: 8px;
+  }
+
+  .ghost-code.middle {
+    font-size: 7px;
+    margin-top: 2px;
+  }
+
+  .ghost-bottom {
+    display: flex;
+    gap: 7px;
+    margin-top: 7px;
+    opacity: 0.7;
+  }
+
+  .ghost-bottom span {
+    animation: code-flicker 1.5s infinite alternate;
+  }
+
+  .ghost-bottom span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .ghost-bottom span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  .ghost-bottom span:nth-child(4) {
+    animation-delay: 0.6s;
+  }
+
+  .ghost-bottom span:nth-child(5) {
+    animation-delay: 0.8s;
+  }
+
+  /* Digital particles behind the ghost */
+
+  .ghost::before,
+  .ghost::after {
+    content: "0 1 A F 7 X 0 1";
+    position: absolute;
+
+    font-family: monospace;
+    font-size: 9px;
+    letter-spacing: 5px;
+
+    white-space: nowrap;
+
+    opacity: 0;
+
+    animation: particle-fade 2s infinite;
+  }
+
+  .ghost::before {
+    right: 90px;
+    top: 35px;
+  }
+
+  .ghost::after {
+    right: 105px;
+    top: 65px;
+    animation-delay: 0.7s;
+  }
+
+  /* Flying across the entire hero */
+
+  @keyframes ghost-fly {
+    0% {
+      left: -150px;
+      transform: scale(0.8) rotate(-3deg);
+    }
+
+    10% {
+      transform: scale(0.9) rotate(2deg);
+    }
+
+    30% {
+      transform: scale(1) rotate(-2deg);
+    }
+
+    50% {
+      transform: scale(0.95) rotate(3deg);
+    }
+
+    70% {
+      transform: scale(1.05) rotate(-2deg);
+    }
+
+    90% {
+      transform: scale(0.9) rotate(2deg);
+    }
+
+    100% {
+      left: calc(100% + 150px);
+      transform: scale(0.8) rotate(-3deg);
+    }
+  }
+
+  /* Floating up and down */
+
+  @keyframes ghost-float {
+    0%,
+    100% {
+      margin-top: 0;
+    }
+
+    50% {
+      margin-top: -25px;
+    }
+  }
+
+  @keyframes eye-glitch {
+    0% {
+      opacity: 1;
+    }
+
+    20% {
+      opacity: 0.4;
+    }
+
+    40% {
+      opacity: 1;
+    }
+
+    70% {
+      opacity: 0.6;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes code-flicker {
+    0% {
+      opacity: 0.25;
+    }
+
+    50% {
+      opacity: 0.9;
+    }
+
+    100% {
+      opacity: 0.4;
+    }
+  }
+
+  @keyframes particle-fade {
+    0% {
+      opacity: 0;
+      transform: translateX(0);
+    }
+
+    30% {
+      opacity: 0.7;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateX(-35px);
+    }
+  }
+
+  /* =========================
+     POSTS
+     ========================= */
 
   #featured,
   #recent-posts {
@@ -158,4 +453,67 @@ const socialCount = SOCIALS.filter(social => social.active).length;
   .all-posts-btn-wrapper {
     @apply my-8 text-center;
   }
+
+  /* Respect users who disable animations */
+
+  @media (prefers-reduced-motion: reduce) {
+    .ghost,
+    .ghost::before,
+    .ghost::after,
+    .eye,
+    .ghost-bottom span {
+      animation: none;
+    }
+  }
+
+  /* Smaller screens */
+
+  @media (max-width: 640px) {
+    #hero {
+      min-height: 230px;
+    }
+
+    .ghost {
+      top: 25px;
+      transform: scale(0.8);
+    }
+  }
 </style>
+
+<script>
+  const characters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%";
+
+  function randomizeGhost() {
+    const ghost = document.querySelector(".ghost");
+
+    if (!ghost) return;
+
+    const elements = ghost.querySelectorAll(
+      ".ghost-code, .ghost-bottom span, .eye"
+    );
+
+    elements.forEach((element) => {
+      if (Math.random() > 0.55) {
+        const length = Math.max(
+          1,
+          element.textContent?.length ?? 1
+        );
+
+        let text = "";
+
+        for (let i = 0; i < length; i++) {
+          text +=
+            characters[Math.floor(Math.random() * characters.length)];
+        }
+
+        element.textContent = text;
+      }
+    });
+  }
+
+  setInterval(randomizeGhost, 180);
+
+  document.addEventListener("astro:after-swap", () => {
+    setInterval(randomizeGhost, 180);
+  });
+</script>
